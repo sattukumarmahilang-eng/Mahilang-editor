@@ -1,125 +1,426 @@
+
 <!DOCTYPE html>
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mahilang Editor — Design anything</title>
+<title>MAHILANG EDITOR</title>
+
 <style>
-:root{--purple:#6c4cf1;--purple2:#8d72ff;--ink:#202033;--muted:#73738a;--line:#e9e8f1;--bg:#f7f7fb}
-*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}
-button,input,select{font:inherit}button{cursor:pointer;border:0}
-.topbar{height:66px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:5}
-.brand{display:flex;align-items:center;gap:10px;font-weight:850;font-size:19px;letter-spacing:-.5px}.logo{width:34px;height:34px;border-radius:11px;background:linear-gradient(135deg,#6c4cf1,#b18cff);display:grid;place-items:center;color:#fff;font-weight:900}
-.top-actions{display:flex;gap:9px;align-items:center}.btn{padding:10px 15px;border-radius:10px;background:#f0eefb;color:#5140b5;font-weight:700}.btn.primary{background:var(--purple);color:#fff}.btn.ghost{background:#fff;border:1px solid var(--line);color:#444}
-.hero{padding:42px 24px 30px;background:linear-gradient(115deg,#f0edff,#f8f7ff 55%,#eef8ff)}.hero-inner{max-width:1180px;margin:auto}.eyebrow{color:#6c4cf1;font-size:12px;font-weight:800;letter-spacing:1.5px}.hero h1{font-size:clamp(30px,4vw,48px);line-height:1.08;margin:12px 0}.hero p{color:var(--muted);margin:0 0 20px}.search{width:min(620px,100%);height:48px;border:1px solid #ded9f8;border-radius:13px;padding:0 16px;background:#fff;outline:none}
-main{max-width:1180px;margin:28px auto;padding:0 24px 60px}.section-head{display:flex;justify-content:space-between;align-items:center;margin:24px 0 14px}.section-head h2{font-size:20px;margin:0}.muted{color:var(--muted);font-size:13px}
-.quick-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}.quick{background:#fff;border:1px solid var(--line);border-radius:15px;padding:17px;text-align:left;transition:.2s}.quick:hover,.template:hover{transform:translateY(-3px);box-shadow:0 10px 24px #28204d12}.quick .ico{font-size:25px;margin-bottom:10px}.quick b{display:block}.quick small{color:var(--muted)}
-.templates{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.template{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;text-align:left;transition:.2s}.thumb{height:150px;display:grid;place-items:center;padding:14px;color:#fff;text-align:center;font-weight:900;font-size:20px}.template:nth-child(1) .thumb{background:linear-gradient(135deg,#f97316,#e11d48)}.template:nth-child(2) .thumb{background:linear-gradient(135deg,#0f766e,#22c55e)}.template:nth-child(3) .thumb{background:linear-gradient(135deg,#1e3a8a,#8b5cf6)}.template:nth-child(4) .thumb{background:linear-gradient(135deg,#111827,#64748b)}.template-info{padding:12px}.template-info b{font-size:14px}.template-info small{display:block;color:var(--muted);margin-top:4px}
-.editor{display:none;position:fixed;inset:0;background:#f5f5f9;z-index:20;flex-direction:column}.editor.show{display:flex}.editbar{height:60px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 14px;gap:10px}.editbar .brand{font-size:16px}.editbar input{border:0;border-bottom:1px solid var(--line);padding:7px;width:170px;outline:none}
-.workspace{display:grid;grid-template-columns:250px 1fr 235px;min-height:0;flex:1}.side{background:#fff;padding:15px;border-right:1px solid var(--line);overflow:auto}.rightside{border-right:0;border-left:1px solid var(--line)}.side h3{font-size:14px;margin:2px 0 14px}.toolgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.tool{background:#f7f6fc;border:1px solid var(--line);border-radius:10px;padding:12px 7px;text-align:center;font-size:12px;font-weight:700}.tool span{display:block;font-size:21px;margin-bottom:5px}.field{margin:13px 0}.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}.field input,.field select{width:100%;padding:9px;border:1px solid var(--line);border-radius:8px;background:#fff}.stage{display:flex;align-items:center;justify-content:center;overflow:auto;padding:24px;background:#ededf3}.canvas-wrap{box-shadow:0 10px 35px #17152a24;background:white;max-width:100%;max-height:100%}canvas{display:block;max-width:100%;height:auto;touch-action:none}.hint{font-size:12px;color:var(--muted);line-height:1.5}.layer{padding:9px;border:1px solid var(--line);border-radius:8px;margin:7px 0;font-size:12px;background:#fafaff}
-@media(max-width:850px){.quick-grid{grid-template-columns:repeat(2,1fr)}.templates{grid-template-columns:repeat(2,1fr)}.workspace{grid-template-columns:190px 1fr}.rightside{display:none}.side{padding:10px}.toolgrid{grid-template-columns:1fr 1fr}}
-@media(max-width:560px){.topbar{padding:0 12px}.hero{padding:30px 16px}.hero-inner h1{font-size:32px}main{padding:0 14px 40px}.templates{gap:10px}.thumb{height:115px;font-size:16px}.workspace{grid-template-columns:76px 1fr}.side{padding:8px 5px}.side h3,.tool b{display:none}.tool{padding:10px 2px}.tool span{font-size:20px;margin:0}.editbar{padding:0 7px}.editbar .brand{font-size:12px}.editbar input{width:100px}.editbar .btn{padding:8px;font-size:12px}.stage{padding:8px}}
+*{box-sizing:border-box}
+body{
+ margin:0;
+ background:#101322;
+ color:white;
+ font-family:Arial,sans-serif;
+}
+header{
+ background:#202844;
+ padding:18px;
+ text-align:center;
+ font-size:24px;
+ font-weight:bold;
+ color:#55e6ff;
+}
+.container{padding:15px;max-width:850px;margin:auto}
+.panel{
+ background:#202844;
+ padding:15px;
+ border-radius:13px;
+ margin-bottom:15px;
+}
+h3{color:#55e6ff}
+button,.upload{
+ background:#087eeb;
+ border:0;
+ padding:12px;
+ color:white;
+ border-radius:8px;
+ cursor:pointer;
+ font-size:15px;
+ margin:4px 0;
+}
+input,select,textarea{
+ width:100%;
+ padding:12px;
+ margin:7px 0;
+ border-radius:7px;
+ border:1px solid #52617e;
+ background:#11182a;
+ color:white;
+}
+textarea{height:100px}
+canvas{
+ width:100%;
+ background:black;
+ border-radius:10px;
+}
+.photo{
+ display:flex;
+ align-items:center;
+ gap:8px;
+ padding:8px;
+ background:#303b58;
+ margin:7px 0;
+ border-radius:8px;
+}
+.photo img{
+ width:55px;
+ height:55px;
+ object-fit:cover;
+ border-radius:5px;
+}
+.photo button{padding:7px}
+.green{background:#138b53}
+.red{background:#d34444}
+#status{color:#75f5ad;font-size:14px}
 </style>
 </head>
-<body>
-<header class="topbar">
-  <div class="brand"><div class="logo">M</div> MAHILANG EDITOR</div>
-  <div class="top-actions"><button class="btn ghost" onclick="openEditor('खाली डिजाइन')">+ नया डिजाइन</button><button class="btn primary" onclick="openEditor('मेरा डिजाइन')">डिजाइन शुरू करें</button></div>
-</header>
-<section class="hero"><div class="hero-inner">
-  <div class="eyebrow">YOUR CREATIVE SPACE</div>
-  <h1>अपने आइडिया को शानदार डिजाइन में बदलें।</h1>
-  <p>पोस्टर, बैनर, थंबनेल और सोशल मीडिया डिजाइन — सब एक ही जगह।</p>
-  <input class="search" id="search" placeholder="टेम्पलेट खोजें — पोस्टर, YouTube, Instagram..." oninput="filterTemplates()">
-</div></section>
-<main>
-  <div class="section-head"><h2>✨ जल्दी शुरू करें</h2><span class="muted">एक आकार चुनें</span></div>
-  <div class="quick-grid">
-    <button class="quick" onclick="openEditor('Instagram पोस्ट',1080,1080)"><div class="ico">📸</div><b>Instagram पोस्ट</b><small>1080 × 1080</small></button>
-    <button class="quick" onclick="openEditor('YouTube थंबनेल',1280,720)"><div class="ico">▶️</div><b>YouTube थंबनेल</b><small>1280 × 720</small></button>
-    <button class="quick" onclick="openEditor('पोस्टर',800,1100)"><div class="ico">📰</div><b>पोस्टर</b><small>800 × 1100</small></button>
-    <button class="quick" onclick="openEditor('बैनर',1400,500)"><div class="ico">🖼️</div><b>बैनर</b><small>1400 × 500</small></button>
-    <button class="quick" onclick="openEditor('लोगो',800,800)"><div class="ico">💠</div><b>लोगो</b><small>800 × 800</small></button>
-  </div>
-  <div class="section-head"><h2>🎨 लोकप्रिय टेम्पलेट</h2><span class="muted">किसी डिजाइन पर क्लिक करें</span></div>
-  <div class="templates" id="templates">
-    <button class="template" data-name="त्योहार पोस्टर" onclick="useTemplate('त्योहार की शुभकामनाएं','#f97316','#fff')"><div class="thumb">शुभकामनाएं<br>✨ FESTIVAL ✨</div><div class="template-info"><b>त्योहार पोस्टर</b><small>सोशल मीडिया</small></div></button>
-    <button class="template" data-name="बिजनेस प्रमोशन" onclick="useTemplate('आपके बिजनेस की पहचान','#0f766e','#fff')"><div class="thumb">GROW YOUR<br>BUSINESS</div><div class="template-info"><b>बिजनेस प्रमोशन</b><small>मार्केटिंग</small></div></button>
-    <button class="template" data-name="यूट्यूब थंबनेल" onclick="useTemplate('आज की बड़ी खबर','#1e3a8a','#fff')"><div class="thumb">आज की<br>बड़ी खबर</div><div class="template-info"><b>YouTube थंबनेल</b><small>वीडियो</small></div></button>
-    <button class="template" data-name="मॉडर्न पोस्टर" onclick="useTemplate('CREATE SOMETHING GREAT','#111827','#fff')"><div class="thumb">CREATE<br>SOMETHING<br>GREAT</div><div class="template-info"><b>मॉडर्न पोस्टर</b><small>क्रिएटिव</small></div></button>
-  </div>
-  <p class="hint" style="margin-top:25px">महत्वपूर्ण: यह Mahilang Editor का पहला चलने वाला प्रोटोटाइप है। इसमें बेसिक एडिटर और डाउनलोड काम करते हैं। ऑनलाइन अकाउंट, क्लाउड सेविंग, बैकग्राउंड रिमूवर और बड़ी टेम्पलेट लाइब्रेरी अगले चरण में जोड़ी जा सकती है।</p>
-</main>
 
-<div class="editor" id="editor">
-  <div class="editbar">
-    <div class="brand"><div class="logo">M</div> MAHILANG EDITOR</div>
-    <input id="designName" value="मेरा डिजाइन" aria-label="डिजाइन का नाम">
-    <div class="top-actions">
-      <button class="btn ghost" onclick="undo()">↶</button><button class="btn ghost" onclick="redo()">↷</button>
-      <button class="btn ghost" onclick="closeEditor()">बंद करें</button><button class="btn primary" onclick="downloadPNG()">डाउनलोड PNG</button>
-    </div>
-  </div>
-  <div class="workspace">
-    <aside class="side">
-      <h3>डिजाइन टूल्स</h3>
-      <div class="toolgrid">
-        <button class="tool" onclick="addText()"><span>🔤</span><b>टेक्स्ट</b></button>
-        <button class="tool" onclick="document.getElementById('upload').click()"><span>🖼️</span><b>फोटो</b></button>
-        <button class="tool" onclick="addRect()"><span>▰</span><b>शेप</b></button>
-        <button class="tool" onclick="addCircle()"><span>⚪</span><b>सर्कल</b></button>
-        <button class="tool" onclick="addEmoji()"><span>⭐</span><b>स्टिकर</b></button>
-        <button class="tool" onclick="clearCanvas()"><span>🗑️</span><b>साफ करें</b></button>
-      </div>
-      <input type="file" id="upload" accept="image/*" hidden onchange="uploadImage(event)">
-      <div class="field"><label>कैनवास का बैकग्राउंड</label><input type="color" id="bgColor" value="#ffffff" onchange="setBackground(this.value)"></div>
-      <p class="hint">किसी ऑब्जेक्ट को चुनने के लिए उस पर क्लिक करें। उसे खींचकर जगह बदलें।</p>
-    </aside>
-    <section class="stage"><div class="canvas-wrap"><canvas id="canvas" width="1080" height="1080"></canvas></div></section>
-    <aside class="side rightside">
-      <h3>ऑब्जेक्ट सेटिंग</h3>
-      <div class="field"><label>टेक्स्ट बदलें</label><input id="textValue" placeholder="टेक्स्ट लिखें" oninput="updateSelectedText(this.value)"></div>
-      <div class="field"><label>रंग</label><input type="color" id="objColor" value="#222222" onchange="updateColor(this.value)"></div>
-      <div class="field"><label>फॉन्ट साइज</label><input type="number" id="fontSize" min="8" max="180" value="54" onchange="updateFontSize(this.value)"></div>
-      <button class="btn ghost" style="width:100%" onclick="deleteSelected()">चुना हुआ हटाएं</button>
-      <div class="section-head"><h3>लेयर्स</h3></div><div id="layers"></div>
-    </aside>
-  </div>
+<body>
+
+<header>🎬 MAHILANG EDITOR</header>
+
+<div class="container">
+
+<div class="panel">
+<h3>📸 अपनी फोटो अपलोड करें</h3>
+<input type="file" id="files" accept="image/*" multiple>
+<div id="photoList"></div>
 </div>
+
+<div class="panel">
+<h3>🎞️ वीडियो सेटिंग</h3>
+
+<label>वीडियो का आकार</label>
+<select id="ratio">
+<option value="16:9">16:9 YouTube</option>
+<option value="9:16">9:16 Reels / Shorts</option>
+</select>
+
+<label>वीडियो की कुल अवधि (सेकंड)</label>
+<input type="number" id="duration" value="60" min="1" max="600">
+
+<label>फोटो बदलने का तरीका</label>
+<select id="transition">
+<option value="fade">Fade Effect</option>
+<option value="normal">Normal</option>
+</select>
+
+<label>वीडियो पर टेक्स्ट</label>
+<input id="caption" placeholder="यहाँ वीडियो का टाइटल लिखें">
+</div>
+
+<div class="panel">
+<h3>🎙️ हिंदी Voice Studio</h3>
+<textarea id="script" placeholder="अपनी हिंदी कहानी या स्क्रिप्ट यहाँ लिखें..."></textarea>
+
+<label>हिंदी आवाज चुनें</label>
+<select id="voice"></select>
+
+<button class="green" onclick="speakText()">🔊 आवाज सुनें</button>
+<button class="red" onclick="stopVoice()">आवाज बंद करें</button>
+
+<p style="font-size:13px;color:#ccc">
+नोट: यह शुरुआती संस्करण आपके ब्राउज़र में उपलब्ध हिंदी आवाज का इस्तेमाल करता है। असली AI Voice और वीडियो में आवाज मिलाने के लिए अगले चरण में TTS सर्वर जोड़ेंगे।
+</p>
+</div>
+
+<div class="panel">
+<h3>👁️ वीडियो प्रीव्यू</h3>
+<canvas id="canvas" width="1280" height="720"></canvas>
+<button onclick="previewVideo()">▶️ Preview देखें</button>
+<button class="green" onclick="exportVideo()">⬇️ वीडियो बनाएं और डाउनलोड करें</button>
+<p id="status">अपनी फोटो अपलोड करके शुरू करें।</p>
+</div>
+
+</div>
+
 <script>
-const canvas=document.getElementById('canvas'),ctx=canvas.getContext('2d');
-let objects=[],selected=-1,bg='#ffffff',history=[],future=[],drag=null;
-function snapshot(){history.push(JSON.stringify({objects,bg}));if(history.length>40)history.shift();future=[]}
-function restore(s){let d=JSON.parse(s);objects=d.objects;bg=d.bg;selected=-1;render()}
-function undo(){if(!history.length)return;future.push(JSON.stringify({objects,bg}));restore(history.pop())}
-function redo(){if(!future.length)return;history.push(JSON.stringify({objects,bg}));restore(future.pop())}
-function openEditor(name,w=1080,h=1080){document.getElementById('editor').classList.add('show');document.getElementById('designName').value=name;canvas.width=w;canvas.height=h;objects=[];selected=-1;bg='#ffffff';history=[];future=[];render()}
-function closeEditor(){document.getElementById('editor').classList.remove('show')}
-function useTemplate(text,color,fg){openEditor('टेम्पलेट डिजाइन',1080,1080);bg=color;objects=[{type:'text',x:540,y:480,text:text,fontSize:90,color:fg,bold:true,align:'center'},{type:'text',x:540,y:620,text:'MAHILANG EDITOR',fontSize:28,color:fg,bold:false,align:'center'}];snapshot();render()}
-function setBackground(c){snapshot();bg=c;render()}
-function addText(){snapshot();objects.push({type:'text',x:canvas.width/2,y:canvas.height/2,text:'अपना टेक्स्ट लिखें',fontSize:58,color:'#222222',bold:true,align:'center'});selected=objects.length-1;render()}
-function addRect(){snapshot();objects.push({type:'rect',x:canvas.width/2-140,y:canvas.height/2-90,w:280,h:180,color:'#7655ed'});selected=objects.length-1;render()}
-function addCircle(){snapshot();objects.push({type:'circle',x:canvas.width/2,y:canvas.height/2,r:100,color:'#ffb020'});selected=objects.length-1;render()}
-function addEmoji(){snapshot();objects.push({type:'text',x:canvas.width/2,y:canvas.height/2,text:'⭐',fontSize:100,color:'#222',bold:false,align:'center'});selected=objects.length-1;render()}
-function uploadImage(e){let f=e.target.files[0];if(!f)return;let url=URL.createObjectURL(f),img=new Image();img.onload=()=>{snapshot();let scale=Math.min(canvas.width*.55/img.width,canvas.height*.55/img.height,1);objects.push({type:'image',x:canvas.width/2,y:canvas.height/2,w:img.width*scale,h:img.height*scale,src:url,img});selected=objects.length-1;render()};img.src=url;e.target.value=''}
-function render(){ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle=bg;ctx.fillRect(0,0,canvas.width,canvas.height);
-objects.forEach((o,i)=>{ctx.save();if(o.type==='text'){ctx.fillStyle=o.color;ctx.textAlign=o.align||'center';ctx.textBaseline='middle';ctx.font=(o.bold?'bold ':'')+o.fontSize+'px Arial, sans-serif';ctx.fillText(o.text,o.x,o.y)}else if(o.type==='rect'){ctx.fillStyle=o.color;ctx.fillRect(o.x,o.y,o.w,o.h)}else if(o.type==='circle'){ctx.fillStyle=o.color;ctx.beginPath();ctx.arc(o.x,o.y,o.r,0,Math.PI*2);ctx.fill()}else if(o.type==='image'&&o.img){ctx.drawImage(o.img,o.x-o.w/2,o.y-o.h/2,o.w,o.h)}
-if(i===selected){ctx.strokeStyle='#6c4cf1';ctx.lineWidth=Math.max(2,canvas.width/500);let b=bounds(o);ctx.setLineDash([8,5]);ctx.strokeRect(b.x,b.y,b.w,b.h)}ctx.restore()});updatePanel()}
-function bounds(o){if(o.type==='text'){ctx.save();ctx.font=(o.bold?'bold ':'')+o.fontSize+'px Arial';let w=ctx.measureText(o.text).width;ctx.restore();return{x:o.x-w/2,y:o.y-o.fontSize/2,w,h:o.fontSize*1.2}}if(o.type==='rect')return{x:o.x,y:o.y,w:o.w,h:o.h};if(o.type==='circle')return{x:o.x-o.r,y:o.y-o.r,w:o.r*2,h:o.r*2};return{x:o.x-o.w/2,y:o.y-o.h/2,w:o.w,h:o.h}}
-function updatePanel(){let o=objects[selected];document.getElementById('textValue').value=o&&o.type==='text'?o.text:'';document.getElementById('objColor').value=o&&o.color&&/^#[0-9a-f]{6}$/i.test(o.color)?o.color:'#222222';document.getElementById('fontSize').value=o&&o.fontSize?o.fontSize:54;document.getElementById('layers').innerHTML=objects.map((x,i)=>`<div class="layer" onclick="selectLayer(${i})">${i===selected?'◉':'○'} ${x.type==='text'?(x.text.slice(0,18)||'टेक्स्ट'):x.type==='image'?'फोटो':x.type==='rect'?'शेप':'सर्कल'}</div>`).reverse().join('')}
-function selectLayer(i){selected=i;render()}
-function updateSelectedText(v){let o=objects[selected];if(o&&o.type==='text'){o.text=v;render()}}
-function updateColor(v){let o=objects[selected];if(o){o.color=v;render()}}
-function updateFontSize(v){let o=objects[selected];if(o&&o.type==='text'){o.fontSize=Math.max(8,Math.min(180,+v||54));render()}}
-function deleteSelected(){if(selected<0)return;snapshot();objects.splice(selected,1);selected=-1;render()}
-function clearCanvas(){snapshot();objects=[];selected=-1;render()}
-function downloadPNG(){let a=document.createElement('a');a.download=(document.getElementById('designName').value||'mah ilang-design').replace(/\s+/g,'-')+'.png';a.href=canvas.toDataURL('image/png');a.click()}
-function coords(e){let r=canvas.getBoundingClientRect();return{x:(e.clientX-r.left)*canvas.width/r.width,y:(e.clientY-r.top)*canvas.height/r.height}}
-canvas.addEventListener('pointerdown',e=>{let p=coords(e);selected=-1;for(let i=objects.length-1;i>=0;i--){let b=bounds(objects[i]);if(p.x>=b.x&&p.x<=b.x+b.w&&p.y>=b.y&&p.y<=b.y+b.h){selected=i;drag={x:p.x,y:p.y,ox:objects[i].x,oy:objects[i].y};canvas.setPointerCapture(e.pointerId);break}}render()});
-canvas.addEventListener('pointermove',e=>{if(!drag||selected<0)return;let p=coords(e),o=objects[selected];o.x=drag.ox+p.x-drag.x;o.y=drag.oy+p.y-drag.y;render()});
-canvas.addEventListener('pointerup',()=>{if(drag)snapshot();drag=null});
-function filterTemplates(){let q=document.getElementById('search').value.toLowerCase();document.querySelectorAll('.template').forEach(t=>t.style.display=t.dataset.name.toLowerCase().includes(q)?'':'none')}
-render();
+const filesInput=document.getElementById("files");
+const photoList=document.getElementById("photoList");
+const canvas=document.getElementById("canvas");
+const ctx=canvas.getContext("2d");
+
+let photos=[];
+let playing=false;
+let voices=[];
+
+filesInput.addEventListener("change",e=>{
+ const selected=Array.from(e.target.files);
+
+ selected.forEach(file=>{
+  if(!file.type.startsWith("image/"))return;
+
+  const url=URL.createObjectURL(file);
+  const img=new Image();
+
+  img.onload=()=>{
+   photos.push({img,url,name:file.name});
+   showPhotos();
+   drawPhoto(0);
+  };
+
+  img.src=url;
+ });
+
+ filesInput.value="";
+});
+
+function showPhotos(){
+ photoList.innerHTML="";
+
+ photos.forEach((p,i)=>{
+  const div=document.createElement("div");
+  div.className="photo";
+
+  const img=document.createElement("img");
+  img.src=p.url;
+
+  const name=document.createElement("span");
+  name.textContent=(i+1)+". "+p.name;
+  name.style.flex="1";
+
+  const up=document.createElement("button");
+  up.textContent="↑";
+  up.onclick=()=>movePhoto(i,-1);
+
+  const down=document.createElement("button");
+  down.textContent="↓";
+  down.onclick=()=>movePhoto(i,1);
+
+  const del=document.createElement("button");
+  del.textContent="✕";
+  del.className="red";
+  del.onclick=()=>removePhoto(i);
+
+  div.append(img,name,up,down,del);
+  photoList.appendChild(div);
+ });
+}
+
+function movePhoto(i,step){
+ const j=i+step;
+ if(j<0||j>=photos.length)return;
+ [photos[i],photos[j]]=[photos[j],photos[i]];
+ showPhotos();
+}
+
+function removePhoto(i){
+ URL.revokeObjectURL(photos[i].url);
+ photos.splice(i,1);
+ showPhotos();
+ if(photos.length)drawPhoto(0);
+ else ctx.clearRect(0,0,canvas.width,canvas.height);
+}
+
+function setupCanvas(){
+ if(document.getElementById("ratio").value==="9:16"){
+  canvas.width=720;
+  canvas.height=1280;
+ }else{
+  canvas.width=1280;
+  canvas.height=720;
+ }
+}
+
+function drawPhoto(index,alpha=1){
+ if(!photos.length)return;
+
+ const img=photos[index].img;
+ const w=canvas.width;
+ const h=canvas.height;
+
+ ctx.fillStyle="black";
+ ctx.fillRect(0,0,w,h);
+
+ const scale=Math.max(w/img.width,h/img.height);
+ const iw=img.width*scale;
+ const ih=img.height*scale;
+
+ ctx.save();
+ ctx.globalAlpha=alpha;
+ ctx.drawImage(img,(w-iw)/2,(h-ih)/2,iw,ih);
+ ctx.restore();
+
+ const title=document.getElementById("caption").value;
+
+ if(title){
+  ctx.fillStyle="rgba(0,0,0,.55)";
+  ctx.fillRect(0,h-100,w,100);
+  ctx.fillStyle="white";
+  ctx.font="bold 38px Arial";
+  ctx.textAlign="center";
+  ctx.fillText(title,w/2,h-40,w-50);
+ }
+}
+
+function previewVideo(){
+ if(!photos.length){
+  alert("पहले फोटो अपलोड करें");
+  return;
+ }
+
+ setupCanvas();
+ drawPhoto(0);
+
+ let i=0;
+ playing=true;
+
+ const delay=3000;
+
+ function next(){
+  if(!playing||i>=photos.length-1)return;
+  i++;
+  drawPhoto(i);
+  setTimeout(next,delay);
+ }
+
+ setTimeout(next,delay);
+}
+
+function speakText(){
+ const text=document.getElementById("script").value;
+
+ if(!text.trim()){
+  alert("पहले हिंदी स्क्रिप्ट लिखें");
+  return;
+ }
+
+ if(!("speechSynthesis" in window)){
+  alert("आपके ब्राउज़र में Voice सुविधा उपलब्ध नहीं है");
+  return;
+ }
+
+ speechSynthesis.cancel();
+
+ const msg=new SpeechSynthesisUtterance(text);
+ msg.lang="hi-IN";
+ msg.rate=1;
+ msg.pitch=1;
+
+ const selected=document.getElementById("voice").value;
+ if(selected!==""){
+  msg.voice=voices[Number(selected)];
+ }
+
+ speechSynthesis.speak(msg);
+}
+
+function stopVoice(){
+ speechSynthesis.cancel();
+}
+
+function loadVoices(){
+ voices=speechSynthesis.getVoices();
+ const select=document.getElementById("voice");
+ select.innerHTML="";
+
+ const hindi=voices
+  .map((v,i)=>({v,i}))
+  .filter(x=>x.v.lang.toLowerCase().startsWith("hi"));
+
+ if(!hindi.length){
+  const opt=document.createElement("option");
+  opt.textContent="डिफॉल्ट ब्राउज़र आवाज";
+  opt.value="";
+  select.appendChild(opt);
+  return;
+ }
+
+ hindi.forEach(x=>{
+  const opt=document.createElement("option");
+  opt.value=x.i;
+  opt.textContent=x.v.name;
+  select.appendChild(opt);
+ });
+}
+
+if("speechSynthesis" in window){
+ loadVoices();
+ speechSynthesis.onvoiceschanged=loadVoices;
+}
+
+function exportVideo(){
+ if(!photos.length){
+  alert("पहले फोटो अपलोड करें");
+  return;
+ }
+
+ if(!window.MediaRecorder){
+  alert("इस ब्राउज़र में वीडियो रिकॉर्डिंग उपलब्ध नहीं है");
+  return;
+ }
+
+ setupCanvas();
+
+ const seconds=Number(document.getElementById("duration").value);
+
+ if(!Number.isFinite(seconds)||seconds<=0||seconds>600){
+  alert("अवधि 1 से 600 सेकंड के बीच रखें");
+  return;
+ }
+
+ const mime=MediaRecorder.isTypeSupported("video/webm;codecs=vp9")
+  ?"video/webm;codecs=vp9":"video/webm";
+
+ const stream=canvas.captureStream(25);
+ const recorder=new MediaRecorder(stream,{mimeType:mime});
+ const chunks=[];
+
+ recorder.ondataavailable=e=>{
+  if(e.data.size)chunks.push(e.data);
+ };
+
+ recorder.onstop=()=>{
+  const blob=new Blob(chunks,{type:"video/webm"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;
+  a.download="MAHILANG-EDITOR.webm";
+  a.click();
+
+  setTimeout(()=>URL.revokeObjectURL(url),60000);
+
+  document.getElementById("status").textContent=
+   "आपका वीडियो डाउनलोड हो गया!";
+ };
+
+ const photoDuration=seconds/photos.length;
+ let index=0;
+ let start=performance.now();
+
+ document.getElementById("status").textContent=
+  "वीडियो तैयार हो रहा है... मोबाइल का पेज खुला रखें।";
+
+ drawPhoto(0);
+ recorder.start(500);
+
+ function frame(now){
+  if(index>=photos.length){
+   if(recorder.state==="recording")recorder.stop();
+   return;
+  }
+
+  const elapsed=now-start;
+  const progress=elapsed/photoDuration;
+
+  if(progress>=1){
+   index++;
+   start=now;
+   if(index<photos.length)drawPhoto(index);
+  }
+
+  if(index<photos.length){
+   requestAnimationFrame(frame);
+  }else if(recorder.state==="recording"){
+   recorder.stop();
+  }
+ }
+
+ requestAnimationFrame(frame);
+}
 </script>
+
 </body>
 </html>
